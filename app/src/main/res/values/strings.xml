@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">BlesoMeter</string>
+    <string name="charging_reminder_notification_title">Pray Time !!</string>
+    <string name="charging_reminder_notification_body">Whatever you give to others 1000 fold comes back to you.</string>
+</resources>
