@@ -12,6 +12,9 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
+import com.example.natan.blesometer.Sync.BlesoReminderIntentService;
+import com.example.natan.blesometer.Sync.ReminderTasks;
+
 /**
  * Created by natan on 10/16/2017.
  */
@@ -22,6 +25,10 @@ public class NotificationUtils {
 
 
     private static final int REMINDER_PENDING_INTENT_ID = 3417;
+
+
+    private static final int ACTION_DRINK_PENDING_INTENT_ID = 1;
+    private static final int ACTION_IGNORE_PENDING_INTENT_ID = 14;
 
 
 
@@ -37,6 +44,8 @@ public class NotificationUtils {
                         context.getString(R.string.charging_reminder_notification_body)))
                 .setDefaults(Notification.DEFAULT_VIBRATE)
                 .setContentIntent(contentIntent(context))
+                .addAction(drinkWaterAction(context))
+                .addAction(ignoreReminderAction(context))
                 .setAutoCancel(true);
 
         // COMPLETED (9) If the build version is greater than JELLY_BEAN, set the notification's priority
@@ -52,6 +61,46 @@ public class NotificationUtils {
         // COMPLETED (12) Trigger the notification by calling notify on the NotificationManager.
         // Pass in a unique ID of your choosing for the notification and notificationBuilder.build()
         notificationManager.notify(REMINDER_NOTIFICATION_ID, notificationBuilder.build());
+    }
+
+
+    private static NotificationCompat.Action ignoreReminderAction(Context context) {
+        // COMPLETED (6) Create an Intent to launch WaterReminderIntentService
+        Intent ignoreReminderIntent = new Intent(context, BlesoReminderIntentService.class);
+        // COMPLETED (7) Set the action of the intent to designate you want to dismiss the notification
+        ignoreReminderIntent.setAction(ReminderTasks.ACTION_DISMISS_NOTIFICATION);
+        // COMPLETED (8) Create a PendingIntent from the intent to launch WaterReminderIntentService
+        PendingIntent ignoreReminderPendingIntent = PendingIntent.getService(
+                context,
+                ACTION_IGNORE_PENDING_INTENT_ID,
+                ignoreReminderIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        // COMPLETED (9) Create an Action for the user to ignore the notification (and dismiss it)
+        NotificationCompat.Action ignoreReminderAction = new NotificationCompat.Action(R.drawable.ic_cancel_black_24px,
+                "No, thanks.",
+                ignoreReminderPendingIntent);
+        // COMPLETED (10) Return the action
+        return ignoreReminderAction;
+    }
+
+
+    private static NotificationCompat.Action drinkWaterAction(Context context) {
+        // COMPLETED (12) Create an Intent to launch WaterReminderIntentService
+        Intent incrementWaterCountIntent = new Intent(context, BlesoReminderIntentService.class);
+        // COMPLETED (13) Set the action of the intent to designate you want to increment the water count
+        incrementWaterCountIntent.setAction(ReminderTasks.ACTION_INCREMENT_BLESO_COUNT);
+        // COMPLETED (14) Create a PendingIntent from the intent to launch WaterReminderIntentService
+        PendingIntent incrementWaterPendingIntent = PendingIntent.getService(
+                context,
+                ACTION_DRINK_PENDING_INTENT_ID,
+                incrementWaterCountIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+        // COMPLETED (15) Create an Action for the user to tell us they've had a glass of water
+        NotificationCompat.Action drinkWaterAction = new NotificationCompat.Action(R.drawable.ic_cancel_black_24px,
+                "I did it!",
+                incrementWaterPendingIntent);
+        // COMPLETED (16) Return the action
+        return drinkWaterAction;
     }
 
 
@@ -102,6 +151,14 @@ public class NotificationUtils {
     }
 
 
+    public static void clearAllNotifications(Context context) {
+
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
 
 
+
+
+    }
 }

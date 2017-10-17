@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.natan.blesometer.Sync.BlesoReminderIntentService;
 import com.example.natan.blesometer.Sync.ReminderTasks;
+import com.example.natan.blesometer.Sync.ReminderUtilities;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         /** Setup the shared preference listener **/
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
+
+        ReminderUtilities.scheduleChargingReminder(this);
     }
 
 
